@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Fire Prediction</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        h1 {
+            color: rgb(255, 255, 255);
+            line-height: 250px;
+            font-size: 5em;
+        }
+        form {
+            padding-bottom: 5px;
+            margin-top: 75px;
+        }
+        #fire-infos {
+            margin-bottom: 75px;
+            margin-left: 115px;
+            margin-right: 115px;
+        }
+        .table th, .table td {
+			text-align: center;
+            width: 800px;
+			vertical-align: middle;
+		}
+        #header {
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0qs4LFN5QmGkkNLyRs5CKU1BSerTzQVrOSQ&s');
+            height: 250px;
+            background-position: center;
+            background-size: cover;
+            text-shadow: 0px 0px 20px #000000;
+            margin-right: 0px;
+            margin-left: 0px;
+        }
+        body {
+            margin: 0px;
+            background-color: rgb(254, 240, 219);
+            color: rgb(0, 0, 0);
+        }
+        #recommend {
+            padding-top: 50px;
+            padding-left: 20px;
+        }
+        #probability {
+            padding-left: 20px;
+            font-weight: bold;
+        }
+        #message {
+            padding-top: 5px;
+            padding-left: 20px;
+        }
+        #menu {
+            display: flex;
+            justify-content: center;
+            background-color: #751e1e;
+            background-position: center;
+            background-size: cover;
+            position: absolute;
+            right: 0px;
+            left: 0px;
+            z-index: 1;
+        }
+        #menu a {
+            color: white;
+            height: 50px;
+            font-size: 1.5em;
+            line-height: 50px;
+            display: block;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        #ChanceFire {
+            /* background-color: rgb(254, 240, 219); */
+            background-color: rgb(33, 21, 2);
+            margin-left: 20px;
+            margin-right: 20px;
+            margin-top: 20px;
+            height: 50px;
+            color: white;
+            text-align: center;
+            line-height: 50px;
+        }
+    </style>
+
+</head>
+
+
+<body>
+    <div id="header" class="container-fluid text-center">
+        <div class="row">
+            <h1 class="col-12">Likelihood of Fires in Cities</h1>
+        </div>
+    </div>
+
+    <ul id="menu">
+        <a id="active-nav" href="home.php">ChatBot!</a>
+    </ul>
+
+    <div id="main">
+    <div id="fire-infos">
+        <div>
+            <form class="col-12" id="search-form">
+                <div class="form-row">
+                    <div class="col-12 mt-4 col-sm-6 col-lg-4">
+                        <select class="form-control" id="location-value">
+                            <option value="Los Angeles">Los Angeles</option>
+                            <option value="Santa Clarita">Santa Clarita</option>
+							<option value="Santa Monica">Santa Monica</option>
+                            <option value="Culver City">Culver City</option>
+                            <option value="Agoura Hills">Agoura Hills</option>
+                            <option value="Pomona">Pomona</option>
+							<option value="Malibu">Malibu</option>
+                            <option value="San Fernando">San Fernando</option>
+                            <option value="Artesia">Artesia</option>
+                            <option value="Pasadena">Pasadena</option>
+							<option value="Irvine">Irvine</option>
+                            <option value="Beverly Hills">Beverly Hills</option>
+                            <option value="Canyon Country">Canyon Country</option>
+                            <option value="Valencia">Valencia</option>
+                            <option value="Fresno">Fresno</option>
+                            <option value="Riverside">Riverside</option>
+                            <option value="Anaheim">Anaheim</option>
+                            <option value="Castaic">Castaic</option>
+						</select>
+                    </div>
+                    <div class="col-12 mt-4 col-sm-auto">
+                        <button type="submit" class="btn btn-primary">Determine Fire Likelihood</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div>
+            <div class="col-12 mt-4" id="num_day">
+                Weather over the next 15 days:
+            </div>
+            <table class="table table-responsive table-striped col-12 mt-3">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Wind Speed</th>
+                        <th>Precipitation (Inches)</th>
+                        <th>Maximum Temperature</th>
+                        <th>Minimum Temperature</th>
+                        <th>Humidity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <p id="recommend">It is recommended that you visit our chatbot for suggestions on next steps. The likelihood that your area is in a fire zone will be shown below. Please take any necessary precautions.</p>
+        <p id="probability"></p>
+        <div id="ChanceFire">
+            Danger Levels (Green = Good, Red = Caution)
+        </div>
+        <p id="message"></p>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <script>
+        document.querySelector('#search-form').onsubmit = function () {
+            let windSpeed = 0;
+            let precipitation = 0;
+            let maxTemp = 0;
+            let minTemp = 0;
+            let Humid = 0;
+            let Dew = 0;
+            const City_location = document.querySelector('#location-value').value;
+            $.ajax({
+                url: "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/"+ City_location +"?unitGroup=us&key=V7GUQUS6UVN9YHBB43L9389VV&contentType=json",
+                dataType: "json",
+                success: function (data) {
+					document.querySelector("tbody").innerHTML = ""
+					for (info of data.days) {
+						addRow(info)
+                        windSpeed += parseInt(info.windspeed)
+                        precipitation += parseInt(info.precip)
+                        maxTemp += parseInt(info.tempmin)
+                        minTemp += parseInt(info.tempmax)
+                        Humid += parseInt(info.humidity)
+                        Dew += parseInt(info.dew)
+					}
+                    windSpeed /= 15
+                    precipitation /= 15
+                    maxTemp /= 15
+                    minTemp /= 15
+                    Humid /= 15
+                    Dew /= 15
+
+                    const tr = document.createElement("tr")
+                    const tdDate = document.createElement("td")
+                    tdDate.innerHTML = "Average: "
+                    tr.appendChild(tdDate)
+                    const tdWind = document.createElement("td")
+                    tdWind.innerHTML = windSpeed
+                    tr.appendChild(tdWind)
+                    const tdRain = document.createElement("td")
+                    tdRain.innerHTML = precipitation
+                    tr.appendChild(tdRain)
+                    const tdMinTemp = document.createElement("td")
+                    tdMinTemp.innerHTML = minTemp
+                    tr.appendChild(tdMinTemp)
+                    const tdMaxTemp = document.createElement("td")
+                    tdMaxTemp.innerHTML = maxTemp
+                    tr.appendChild(tdMaxTemp)
+                    const tdHumid = document.createElement("td")
+                    tdHumid.innerHTML = Humid
+                    tr.appendChild(tdHumid)
+                    document.querySelector("tbody").appendChild(tr)
+
+                    for (alerting of data.alerts) {
+                        const tr1 = document.createElement("tr")
+                        const td1 = document.createElement("td")
+                        td1.innerHTML = "Warning: "
+                        tr1.appendChild(td1)
+                        const tdAlerts = document.createElement("td")
+                        tdAlerts.innerHTML = alerting.event
+                        tr1.appendChild(tdAlerts)
+                        document.querySelector("tbody").appendChild(tr1)
+                    }
+                    let output = -5.2191 + precipitation*(-0.7019) + maxTemp*(0.8128) + minTemp*(-0.0624) + Humid*(-0.3607) + windSpeed*(0.3905) + Dew*(0.2221)
+                    if (output < 0) {
+                        output = 0;
+                    }
+                    if (output > 100) {
+                        output = 100;
+                    }
+                    document.querySelector("#probability").innerHTML = "Probability of Fire: " + output + " %"
+
+                    if (output < 20) {
+                        document.querySelector("#ChanceFire").style.backgroundColor = "green";
+                        document.querySelector("#message").innerHTML = "There's little need to worry, because there is a low probability of a fire occuring in your area."
+                    }
+                    else if (output < 40) {
+                        document.querySelector("#ChanceFire").style.backgroundColor = "#6e751e";
+                        document.querySelector("#message").innerHTML = "Don't worry yet, but keep an eye on the fire conditions just to be safe."
+                    }
+                    else if (output < 75) {
+                        document.querySelector("#ChanceFire").style.backgroundColor = "#b95904";
+                        document.querySelector("#message").innerHTML = "No need to evacuate just yet, but make sure to monitor changes in fire risks!"
+                    }
+                    else {
+                        document.querySelector("#ChanceFire").style.backgroundColor = "red";
+                        document.querySelector("#message").innerHTML = "Get ready to evacuate if necessary and keep an closely monitor updates on fire conditions!"
+                    }
+
+                },
+                error: function (e) {
+                    alert("Error")
+                    console.log(e)
+                }
+            })
+
+            return false;
+        }
+
+        function addRow(info) {
+            const tr = document.createElement("tr")
+            const tdDate = document.createElement("td")
+            tdDate.innerHTML = info.datetime
+            tr.appendChild(tdDate)
+            const tdWind = document.createElement("td")
+            tdWind.innerHTML = info.windspeed
+            tr.appendChild(tdWind)
+            const tdRain = document.createElement("td")
+            tdRain.innerHTML = info.precip
+            tr.appendChild(tdRain)
+            const tdMinTemp = document.createElement("td")
+            tdMinTemp.innerHTML = info.tempmin
+            tr.appendChild(tdMinTemp)
+            const tdMaxTemp = document.createElement("td")
+            tdMaxTemp.innerHTML = info.tempmax
+            tr.appendChild(tdMaxTemp)
+            const tdHumid = document.createElement("td")
+            tdHumid.innerHTML = info.humidity
+            tr.appendChild(tdHumid)
+            document.querySelector("tbody").appendChild(tr)
+        }
+
+    </script>
+</body>
+
+
+</html>
