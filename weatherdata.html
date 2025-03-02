@@ -56,19 +56,22 @@
             background-color: #751e1e;
             background-position: center;
             background-size: cover;
-            position: absolute;
-            right: 0px;
-            left: 0px;
+            position: fixed;
+            right: 15px;
+            height: 50px;
+            width: 90px;
+            bottom: 10px;
             z-index: 1;
         }
         #menu a {
             color: white;
             height: 50px;
-            font-size: 1.5em;
+            font-size: 1.2em;
             line-height: 50px;
             display: block;
             text-decoration: none;
             font-weight: bold;
+            margin-left: -40px;
         }
         #ChanceFire {
             /* background-color: rgb(254, 240, 219); */
@@ -94,7 +97,7 @@
     </div>
 
     <ul id="menu">
-        <a id="active-nav" href="home.php">ChatBot!</a>
+        <a id="active-nav" href="">ChatBot!</a>
     </ul>
 
     <div id="main">
@@ -104,24 +107,27 @@
                 <div class="form-row">
                     <div class="col-12 mt-4 col-sm-6 col-lg-4">
                         <select class="form-control" id="location-value">
-                            <option value="Los Angeles">Los Angeles</option>
-                            <option value="Santa Clarita">Santa Clarita</option>
-							<option value="Santa Monica">Santa Monica</option>
-                            <option value="Culver City">Culver City</option>
-                            <option value="Agoura Hills">Agoura Hills</option>
-                            <option value="Pomona">Pomona</option>
-							<option value="Malibu">Malibu</option>
-                            <option value="San Fernando">San Fernando</option>
-                            <option value="Artesia">Artesia</option>
-                            <option value="Pasadena">Pasadena</option>
-							<option value="Irvine">Irvine</option>
-                            <option value="Beverly Hills">Beverly Hills</option>
-                            <option value="Canyon Country">Canyon Country</option>
-                            <option value="Valencia">Valencia</option>
-                            <option value="Fresno">Fresno</option>
-                            <option value="Riverside">Riverside</option>
-                            <option value="Anaheim">Anaheim</option>
-                            <option value="Castaic">Castaic</option>
+                            <option value="Los Angeles, California">Los Angeles</option>
+                            <option value="Santa Clarita, California">Santa Clarita</option>
+							<option value="Santa Monica, California">Santa Monica</option>
+                            <option value="Culver City, California">Culver City</option>
+                            <option value="Agoura Hills, California">Agoura Hills</option>
+                            <option value="Pomona, California">Pomona</option>
+							<option value="Malibu, California">Malibu</option>
+                            <option value="San Fernando, California">San Fernando</option>
+                            <option value="Artesia, California">Artesia</option>
+                            <option value="Pasadena, California">Pasadena</option>
+							<option value="Irvine, California">Irvine</option>
+                            <option value="Beverly Hills, California">Beverly Hills</option>
+                            <option value="Canyon Country, California">Canyon Country</option>
+                            <option value="Valencia, California">Valencia</option>
+                            <option value="Fresno, California">Fresno</option>
+                            <option value="Riverside, California">Riverside</option>
+                            <option value="Anaheim, California">Anaheim</option>
+                            <option value="Castaic, California">Castaic</option>
+                            <option value="Seattle, United States">Seattle, Washington</option>
+                            <option value="San Fernando, Chaco, Argentina">San Fernando, Chaco, Argentina</option>
+                            <option value="Jazan City, Saudi Arabia">Jazan City, Saudi Arabia</option>
 						</select>
                     </div>
                     <div class="col-12 mt-4 col-sm-auto">
@@ -177,17 +183,23 @@
 						addRow(info)
                         windSpeed += parseInt(info.windspeed)
                         precipitation += parseInt(info.precip)
-                        maxTemp += parseInt(info.tempmin)
-                        minTemp += parseInt(info.tempmax)
+                        maxTemp += parseInt(info.tempmax)
+                        minTemp += parseInt(info.tempmin)
                         Humid += parseInt(info.humidity)
                         Dew += parseInt(info.dew)
 					}
                     windSpeed /= 15
+                    windSpeed = windSpeed.toFixed(3)
                     precipitation /= 15
+                    precipitation = precipitation.toFixed(3)
                     maxTemp /= 15
+                    maxTemp = maxTemp.toFixed(3)
                     minTemp /= 15
+                    minTemp = minTemp.toFixed(3)
                     Humid /= 15
+                    Humid = Humid.toFixed(3)
                     Dew /= 15
+                    Dew = Dew.toFixed(3)
 
                     const tr = document.createElement("tr")
                     const tdDate = document.createElement("td")
@@ -199,12 +211,12 @@
                     const tdRain = document.createElement("td")
                     tdRain.innerHTML = precipitation
                     tr.appendChild(tdRain)
-                    const tdMinTemp = document.createElement("td")
-                    tdMinTemp.innerHTML = minTemp
-                    tr.appendChild(tdMinTemp)
                     const tdMaxTemp = document.createElement("td")
                     tdMaxTemp.innerHTML = maxTemp
                     tr.appendChild(tdMaxTemp)
+                    const tdMinTemp = document.createElement("td")
+                    tdMinTemp.innerHTML = minTemp
+                    tr.appendChild(tdMinTemp)
                     const tdHumid = document.createElement("td")
                     tdHumid.innerHTML = Humid
                     tr.appendChild(tdHumid)
@@ -229,15 +241,15 @@
                     }
                     document.querySelector("#probability").innerHTML = "Probability of Fire: " + output + " %"
 
-                    if (output < 20) {
+                    if (output < 30) {
                         document.querySelector("#ChanceFire").style.backgroundColor = "green";
                         document.querySelector("#message").innerHTML = "There's little need to worry, because there is a low probability of a fire occuring in your area."
                     }
-                    else if (output < 40) {
+                    else if (output < 50) {
                         document.querySelector("#ChanceFire").style.backgroundColor = "#6e751e";
                         document.querySelector("#message").innerHTML = "Don't worry yet, but keep an eye on the fire conditions just to be safe."
                     }
-                    else if (output < 75) {
+                    else if (output < 70) {
                         document.querySelector("#ChanceFire").style.backgroundColor = "#b95904";
                         document.querySelector("#message").innerHTML = "No need to evacuate just yet, but make sure to monitor changes in fire risks!"
                     }
@@ -267,12 +279,12 @@
             const tdRain = document.createElement("td")
             tdRain.innerHTML = info.precip
             tr.appendChild(tdRain)
-            const tdMinTemp = document.createElement("td")
-            tdMinTemp.innerHTML = info.tempmin
-            tr.appendChild(tdMinTemp)
             const tdMaxTemp = document.createElement("td")
             tdMaxTemp.innerHTML = info.tempmax
             tr.appendChild(tdMaxTemp)
+            const tdMinTemp = document.createElement("td")
+            tdMinTemp.innerHTML = info.tempmin
+            tr.appendChild(tdMinTemp)
             const tdHumid = document.createElement("td")
             tdHumid.innerHTML = info.humidity
             tr.appendChild(tdHumid)
