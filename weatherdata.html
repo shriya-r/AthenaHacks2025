@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Fire Prediction</title>
+    <title>FireCheck</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <style>
         h1 {
@@ -12,9 +12,9 @@
         }
         form {
             padding-bottom: 5px;
-            margin-top: 75px;
         }
         #fire-infos {
+            margin-top: 50px;
             margin-bottom: 75px;
             margin-left: 115px;
             margin-right: 115px;
@@ -56,11 +56,12 @@
             background-color: #751e1e;
             background-position: center;
             background-size: cover;
-            position: fixed;
-            right: 15px;
-            height: 50px;
+            position: absolute;
+            right: 0px;
+            left: 0px;
+            /* height: 50px;
             width: 90px;
-            bottom: 10px;
+            bottom: 10px; */
             z-index: 1;
         }
         #menu a {
@@ -72,6 +73,10 @@
             text-decoration: none;
             font-weight: bold;
             margin-left: -40px;
+        }
+        #menu a:hover {
+            color: rgb(23, 86, 235);
+            text-decoration: none;
         }
         #ChanceFire {
             /* background-color: rgb(254, 240, 219); */
@@ -102,6 +107,7 @@
 
     <div id="main">
     <div id="fire-infos">
+        <div style="font-size: 20px; font-weight: 400"><br/><br/>This website aims to predict the likelihood of a wildfire incident based on past weather data- including temperature, humidity, and windspeed. This website is designed to provide helpful information regarding wildfire risks at different locations. We hope to provide easy access to real-time wildfire information, and to minimize any damage, loss or negative effects on everyone's lives.<br/><br/></div>
         <div>
             <form class="col-12" id="search-form">
                 <div class="form-row">
@@ -239,7 +245,7 @@
                     if (output > 100) {
                         output = 100;
                     }
-                    document.querySelector("#probability").innerHTML = "Probability of Fire: " + output + " %"
+                    document.querySelector("#probability").innerHTML = "Fire Factor: " + output
 
                     if (output < 30) {
                         document.querySelector("#ChanceFire").style.backgroundColor = "green";
