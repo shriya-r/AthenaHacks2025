@@ -5,11 +5,13 @@ There are many applications allowing people to determine where an existing fire 
 ## About FireCheck
 FireCheck is a web application which outputs weather data for an inputted city over the next 15 days. Then, the application will use this data and pass it through an equation which will output the probability of a fire occurring in the specified city. The application will also portray the amount of danger a person is in and provide a chatbot with advice for advice on next steps.
 ## Technical Specifications
-
+Web Application: The website needs a form with an input field that accepts cities. Once the form is submitted, a table should be outputted with the weather data. Then, a percentage will be outputted for the probability that a fire will occur and the danger levels will be shown so users can understand whether a certain percentage means they need to worry or not. Also, there will be a link to a chatbot so that users can ask any questions are gain any tips. The link will take the user to a page for them to input their questions and a chatbot will output responses.
 ## Detailed Designs
-
+We use HTML to create a website and added forms to take in the search parameter of location. Then, we used JavaScript to request the weather data through an API for visualcrossing. After retrieving the information as a JSON data type, the information is then added to a table and placed through a formula to output the fire probability. CSS was used to style the website to make it user-friendly.
 ## Challenges
-
-## What We Learned
-
+1. It was difficult to find accurate weather data. There were very few large enough datasets and most datasets available have a limited range of data, leading to biased information as there were missing parameters.
+2. There were little datasets on past fires available but we were able to find one from a government website. We combined this dataset with the weather data to determine the weights of each parameter that influences the probability of a wildfire.
+3. We encountered challenges when creating the chatbot, including technical errors while integrating the chatbot into the website with the HTML file.
+4. The equation used to calculate the probability was initially inaccurate. We had to undergo multiple modifications to increase the accuracy of the equation by incorporating more parameters.
 ## What's next for FireCheck
+Expand the fire predictions to more areas outside of California - ideally including coverage across North America, since many parts of Canada are also prone to frequent wildfires! Also, we can continue incorporating more parameters and use larger datasets to increase the accuracy of our predictions.
