@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Wildfire Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        #chat-box {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ccc;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f9f9f9;
+            white-space: pre-wrap; /* Ensures newlines appear properly */
+        }
+        input, button {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Wildfire Information Chatbot</h2>
+<div id="chat-box"></div>
+
+<input type="text" id="user-input" placeholder="Type your question here..." style="width: 80%;">
+<button onclick="sendMessage()">Send</button>
+
+<script>
+    const session_id = "web-session";
+
+    // Utility to convert **bold** to <strong> and *italic* to <em>
+    function formatMarkdownToHTML(text) {
+        return text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // **bold**
+            .replace(/\*(.*?)\*/g, '<em>$1</em>');              // *italic*
+    }
+
+    function appendMessage(sender, message) {
+        const chatBox = document.getElementById('chat-box');
+        const messageDiv = document.createElement('div');
+        messageDiv.innerHTML = `<strong>${sender}:</strong> ${formatMarkdownToHTML(message)}`;
+        chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function sendMessage() {
+        const userInput = document.getElementById('user-input').value;
+        if (!userInput.trim()) return;
+
+        appendMessage('You', userInput);
+        document.getElementById('user-input').value = '';
+
+        fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: userInput,
+                session_id: session_id
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            appendMessage('Bot', data.response);
+        })
+        .catch(err => {
+            appendMessage('Bot', 'Error contacting chatbot service.');
+            console.error('Error:', err);
+        });
+    }
+</script>
+
+</body>
+</html>
